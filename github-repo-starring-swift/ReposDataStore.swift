@@ -12,6 +12,7 @@ class ReposDataStore {
     
     static let sharedInstance = ReposDataStore()
     fileprivate init() {}
+  var isStarred: Bool = false
     
     var repositories:[GithubRepository] = []
     
@@ -27,5 +28,23 @@ class ReposDataStore {
             completion()
         }
     }
+
+  func toggleStarStatus(for object: GithubRepository, completion: @escaping (Bool)->()) {
+    GithubAPIClient.checkIfRepositoryIsStarred(object.fullName) { (isStarred) in
+      if isStarred == false {
+        GithubAPIClient.starRepository(named: object.fullName) {
+          completion(true)
+        }
+
+      } else {
+        GithubAPIClient.unstarRepository(named: object.fullName) {
+          completion(false)
+        }
+
+      }
+
+    }
+    
+  }
 
 }

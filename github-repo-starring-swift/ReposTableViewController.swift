@@ -41,4 +41,26 @@ class ReposTableViewController: UITableViewController {
         return cell
     }
 
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let repository = store.repositories[indexPath.row]
+
+    store.toggleStarStatus(for: repository) { (isStarred) in
+
+      if isStarred == false {
+        let alertController = UIAlertController(title: "You just unstarred \(repository.fullName)", message: "", preferredStyle: .alert)
+        let alert = UIAlertAction(title: "ok", style: .default, handler: {action in alertController.dismiss(animated: true, completion: nil)})
+        alertController.addAction(alert)
+        self.present(alertController, animated: true, completion: nil)
+
+      } else {
+        let alertController = UIAlertController(title: "You just starred \(repository.fullName)", message: "", preferredStyle: .alert)
+        let alert = UIAlertAction(title: "ok", style: .default, handler: {action in alertController.dismiss(animated: true, completion: nil)})
+        alertController.addAction(alert)
+        self.present(alertController, animated: true, completion: nil)
+        
+      }
+    }
+
+  }
+
 }
