@@ -29,12 +29,16 @@ class GithubAPIClient {
     }
 
   class func checkIfRepositoryIsStarred(_ fullName: String, completion: @escaping (Bool) -> ()) {
-    let urlString = "https://api.github.com/user/starred/\(fullName)?client_id=\(clientID)&client_secret=\(clientSecret)&access_token=\(token)"
+    let urlString = "https://api.github.com/user/starred/\(fullName)"
     let url = URL(string: urlString)
     let session = URLSession.shared
 
+
     if let unwrappedURL = url {
-      let task = session.dataTask(with: unwrappedURL, completionHandler: { (data, response, error) in
+      var request = URLRequest(url: unwrappedURL)
+      request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+      request.httpMethod = "GET"
+      let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
         if let status = response as? HTTPURLResponse{
           if status.statusCode == 204 {
             completion(true)
@@ -56,13 +60,14 @@ class GithubAPIClient {
 
 
   class func starRepository(named fullName: String, completion: @escaping ()->()) {
-    let urlString = "https://api.github.com/user/starred/\(fullName)?client_id=\(clientID)&client_secret=\(clientSecret)&access_token=\(token)"
+    let urlString = "https://api.github.com/user/starred/\(fullName)"
     let url = URL(string: urlString)
     let session = URLSession.shared
 
     if let unwrappedURL = url {
       var request = URLRequest(url: unwrappedURL)
       request.addValue("0", forHTTPHeaderField: "Content-Length")
+      request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
       request.httpMethod = "PUT"
 
 
@@ -83,14 +88,16 @@ class GithubAPIClient {
   }
 
   class func unstarRepository(named fullName: String, completion: @escaping ()->()) {
-    let urlString = "https://api.github.com/user/starred/\(fullName)?client_id=\(clientID)&client_secret=\(clientSecret)&access_token=\(token)"
+    let urlString = "https://api.github.com/user/starred/\(fullName)"
     let url = URL(string: urlString)
     let session = URLSession.shared
 
     if let unwrappedURL = url {
       var request = URLRequest(url: unwrappedURL)
       request.addValue("0", forHTTPHeaderField: "Content-Length")
+      request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
       request.httpMethod = "DELETE"
+
 
 
       let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
